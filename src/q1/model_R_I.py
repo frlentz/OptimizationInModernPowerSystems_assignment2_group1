@@ -1,12 +1,7 @@
-"""Models R and I - every household alone behind its own meter, each solving its own FlexibleConsumer problem.
+""" Models R and I - every household alone behind its own meter, each solving its own FlexibleConsumer problem. """
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))  # the repo folder, so "src" is found when you press Run
 
-    R  no contract:          solve_members(com)                         full tariffs, no cap
-    I  individual contracts: solve_members(com, contract=com.contract)  tariffs x (1 - beta), own cap kappa_i Pbar_t, penalty
-
-The DSO meters the sum of the households' imports, P_t = sum_i p_im_it; the congestion is its exceedance above the cap.
-
-    python -m src.q1.model_R_I          # check model R against the reference values of dso_contract_params.json
-"""
 import pandas as pd
 
 from src.q1.consumer import FlexibleConsumer, collect
