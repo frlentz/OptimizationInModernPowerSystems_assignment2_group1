@@ -1,7 +1,4 @@
 """ Models R and I - every household alone behind its own meter, each solving its own FlexibleConsumer problem. """
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))  # the repo folder, so "src" is found when you press Run
-
 import pandas as pd
 
 from src.q1.consumer import FlexibleConsumer, collect

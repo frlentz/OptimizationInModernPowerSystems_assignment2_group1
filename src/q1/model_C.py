@@ -17,9 +17,6 @@ household's own p_im / p_ex instead of at the connection point -> must give exac
 
     python -m src.q1.model_C          # run the checks of model C on the base case (d1)
 """
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))  # the repo folder, so "src" is found when you press Run
-
 import gurobipy as gp
 import pandas as pd
 from gurobipy import GRB
