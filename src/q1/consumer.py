@@ -23,6 +23,8 @@ The same class is used in the three models of Question 1:
                                                      p_im_t - cap_i,t - e_t <= 0,  -e_t <= 0           (A2.2)-(A2.3)
     FlexibleConsumer(d, model=m)                 model C: added to the community's model m (src/q1/model_C.py); it pays no
                                                      grid cost itself (the manager pays at the meter), only its PV cost
+    FlexibleConsumer(d, prices=x)                posted price (Q2): alone, pays x_t for every kWh it takes from the
+                                                     community and gets x_t for every kWh it gives; no tariffs, no cap
 
 Conventions as in Assignment 1: every variable unbounded, every bound written as its own constraint.
 """
@@ -33,10 +35,11 @@ from gurobipy import GRB
 
 class FlexibleConsumer:
 
-    def __init__(self, data, contract=None, model=None):
+    def __init__(self, data, contract=None, model=None, prices=None):
         self.data = data
         self.contract = contract                      # None: model R; com.contract: model I
         self.in_community = model is not None         # True: model C
+        self.prices = None if prices is None else list(prices)   # posted price x_t, one per hour (Q2)
         self.T = range(1, data.n_hours + 1)           # hours t = 1, ..., 24
         if self.in_community:
             self.m = model                            # the community's model (C)
@@ -57,6 +60,9 @@ class FlexibleConsumer:
         pi_DA = {t: d.energy_price[t - 1] for t in T}
         pi_im = {t: pi_DA[t] + tariff_factor * d.import_tariff for t in T}
         pi_ex = {t: pi_DA[t] - tariff_factor * d.export_tariff for t in T}
+        if self.prices is not None:                   # posted price: the same price for buying and selling
+            pi_im = {t: self.prices[t - 1] for t in T}
+            pi_ex = {t: self.prices[t - 1] for t in T}
         PV_bar = {t: d.pv_available[t - 1] for t in T}                # 0 in every hour for households without PV
         l_ref = {t: d.reference_load[t - 1] for t in T}
         L_lo = {t: d.load_lower_kWh[t - 1] for t in T}                # max(0, l_ref - 1)
